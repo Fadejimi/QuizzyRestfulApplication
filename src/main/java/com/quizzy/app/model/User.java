@@ -16,6 +16,9 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 @Table(name="users")
 public class User extends AuditModel {
@@ -47,6 +50,7 @@ public class User extends AuditModel {
 			inverseJoinColumns= {
 					@JoinColumn(name="group_id")
 			})
+	@JsonIgnoreProperties
 	private Set<Group> groups;
 	
 	public long getId() {

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.quizzy.app.exception.ResourceNotFoundException;
 import com.quizzy.app.model.Group;
+import com.quizzy.app.model.User;
 import com.quizzy.app.repository.GroupRepository;
 import com.quizzy.app.repository.UserRepository;
 import com.quizzy.app.utils.RestUtility;
@@ -32,8 +33,13 @@ public class GroupController {
 	private GroupRepository groupRepository;
 	
 	@GetMapping("/users/{id}/groups")
-	public List<Group> getAllGroups(@PathVariable(value="id") long id) {
-		return groupRepository.findGroupsByUsers(id);
+	public List<Group> getAllGroups(@PathVariable Long id) {
+		System.out.println("The user id for the group is " + id);
+		if (!userRepository.existsById(id)) {
+			throw new ResourceNotFoundException("Users", "id", id);
+		}
+		User user = userRepository.getOne(id);
+		return groupRepository.findGroupsByUsers(user);
 	}
 	
 	@PostMapping("/users/{id}/groups")
@@ -41,6 +47,7 @@ public class GroupController {
 			@Valid @RequestBody Group group) {
 		return userRepository.findById(id).map(user -> {
 			group.setAdmin(user);
+			group.getUsers().add(user);
 			Group groupResponse =  groupRepository.save(group);
 			return RestUtility.getResponseEntity(groupResponse.getId());
 		}).orElseThrow(() -> new ResourceNotFoundException("User", "Id", id));

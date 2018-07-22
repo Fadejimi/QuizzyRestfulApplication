@@ -10,7 +10,7 @@ import org.hibernate.annotations.OnDeleteAction;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-@Table(name="Group")
+@Table(name="groups")
 public class Group extends AuditModel{
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
